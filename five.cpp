@@ -11,12 +11,14 @@ struct word
 {
 	std::string s;
 	uint32_t n = 0;
+
+	bool operator<(const word& other)  const { return n < other.n; }
 };
 
 struct answer
 {
-	std::vector<std::string> s;
-	uint32_t n;
+	std::vector<struct word> w;
+	uint32_t n = 0;
 };
 
 uint32_t ston(std::string s)
@@ -39,7 +41,8 @@ uint32_t ston(std::string s)
 	return n;
 }
 
-std::map<std::string, std::vector<struct word>> word_map;
+std::map<struct word, std::vector<struct word>> word_map;
+//std::map<uint32_t, std::vector<struct word>> letter_map;
 struct answer current_answers;
 
 int main()
@@ -104,7 +107,7 @@ int main()
 		{
 			if ((words[i].n & words[j].n) == 0)
 			{
-				word_map[words[i].s].push_back(words[j]);
+				word_map[words[i]].push_back(words[j]);
 			}
 		}
 	}
@@ -113,11 +116,11 @@ int main()
 	// for every word, try to build an answer list
 	for (size_t i = 0; i < words.size(); i++)
 	{
-		current_answers.s.clear();
+		current_answers.w.clear();
 		current_answers.n = 0;
 
 		struct word current_word = words[i];
-		current_answers.s.push_back(current_word.s);
+		current_answers.w.push_back(current_word);
 		current_answers.n = current_word.n;
 		find_five();
 	}
@@ -130,37 +133,31 @@ int main()
 
 void find_five()
 {
-	if (current_answers.s.size() == 5)
+	if (current_answers.w.size() == 5)
 	{
 		printf("solution found: ");
-		for (auto answer : current_answers.s)
+		for (auto answer : current_answers.w)
 		{
-			printf("%s, ", answer.c_str());
+			printf("%s, ", answer.s.c_str());
 		}
 		printf("\n");
 	}
 	else
 	{
 		// search for next word to add to current_answers
-		for (auto next : word_map[current_answers.s.back()])
+		for (auto next : word_map[current_answers.w.back()])
 		{
 			if ((current_answers.n & next.n) == 0)
 			{
 				// we found a new word to add
 				current_answers.n |= next.n;
-				current_answers.s.push_back(next.s);
+				current_answers.w.push_back(next);
 				find_five();
 			}
-#if 0
-			else if ((ston(current_answers.s.front()) & it->n) != 0)
-			{
-				it = word_map[current_answers.s.back()].erase(it);
-			}
-#endif
 		}
 	}
 
 	// current word is a dead-end, remove it from the current_answers
-	current_answers.n ^= ston(current_answers.s.back());
-	current_answers.s.pop_back();
+	current_answers.n ^= current_answers.w.back().n;
+	current_answers.w.pop_back();
 }
