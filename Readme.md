@@ -8,7 +8,8 @@ Using only 5-letter words, can you find 5 words where together they don't have a
 There are 26 letters, so for every answer you will be using every letter except for one.
 
 It turns out there are 10 sets of five five-letter words! The output of this program is:
-```solution found: waqfs, bling, treck, vozhd, jumpy,
+```
+solution found: waqfs, bling, treck, vozhd, jumpy,
 solution found: waqfs, brick, vozhd, glent, jumpy,
 solution found: waqfs, blunk, cimex, vozhd, grypt,
 solution found: waqfs, brung, cylix, vozhd, kempt,
